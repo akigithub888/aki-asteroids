@@ -5,9 +5,11 @@ from asteroid import *
 from asteroidfield import *
 from circleshape import *
 from shot import *
+from score import *
 
 def main():
     pygame.init()
+    pygame.font.init()
     print("Starting Asteroids!")
     print(f"Screen width: {SCREEN_WIDTH}")
     print(f"Screen height: {SCREEN_HEIGHT}")
@@ -23,8 +25,10 @@ def main():
     Player.containers = (updateable, drawable)
     Asteroid.containers = (asteroids, updateable, drawable)
     AsteroidField.containers = (updateable)
+    Score.containers = (updateable, drawable)
     player = Player((SCREEN_WIDTH) / 2, (SCREEN_HEIGHT) / 2)
     asteroidfield = AsteroidField()
+    timer_score = Score(10,10)
 
 
     while running:
@@ -32,7 +36,9 @@ def main():
             if event.type == pygame.QUIT:
                 return
         screen.fill((0, 0, 0))  # Fill the screen with black
+        ### print(f"Number of items in drawable group: {len(drawable)}")
         updateable.update(dt)
+        timer_score.update()
         for d in drawable:
             d.draw(screen)
         for a in asteroids:
@@ -44,6 +50,7 @@ def main():
                 if a.collision(s):
                     a.split()
                     s.kill()
+        timer_score.draw(screen)
         pygame.display.flip()  # Update the display
         dt = clock.tick(60) / 1000.0
 
